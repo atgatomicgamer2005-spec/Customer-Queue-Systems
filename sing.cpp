@@ -1,65 +1,65 @@
 #include <iostream>
+#include <queue>
 #include <string>
 using namespace std;
 
-const int MAX = 100;
-
-string customers[MAX];
-int front = 0;
-int rear = -1;
-int count = 0;
-
-void addCustomer(string name) {
-    if (count == MAX) {
-        cout << "Queue is full!\n";
-        return;
-    }
-
-    rear = (rear + 1) % MAX;
-    customers[rear] = name;
-    count++;
-
-    cout << name << " added to the queue.\n";
-}
-
-void serveCustomer() {
-    if (count == 0) {
-        cout << "No customers are waiting.\n";
-        return;
-    }
-
-    cout << "Serving customer: "
-         << customers[front] << endl;
-
-    front = (front + 1) % MAX;
-    count--;
-}
-
-void displayQueue() {
-    if (count == 0) {
-        cout << "The queue is empty.\n";
-        return;
-    }
-
-    cout << "\nCustomers waiting:\n";
-
-    for (int i = 0; i < count; i++) {
-        int index = (front + i) % MAX;
-        cout << i + 1 << ". "
-             << customers[index] << endl;
-    }
-}
+struct Customer {
+    int id;
+    string name;
+};
 
 int main() {
-    addCustomer("Elvis");
-    addCustomer("Daniel");
-    addCustomer("Michael");
+    queue<Customer> q;
+    int choice, idCounter = 1;
+    string name;
 
-    displayQueue();
+    cout << "=== CUSTOMER QUEUE SYSTEM ===" << endl;
+    cout << "Real-world application of Queue (FIFO)" << endl;
 
-    serveCustomer();
+    do {
+        cout << "\n1. Enqueue Customer\n2. Dequeue Customer\n3. Front Customer\n4. Display Queue\n5. Queue Size\n0. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
 
-    displayQueue();
+        switch(choice) {
+            case 1:
+                cout << "Enter customer name: ";
+                cin >> name;
+                q.push({idCounter++, name});
+                cout << name << " enqueued. Queue size: " << q.size() << endl;
+                break;
+            case 2:
+                if(!q.empty()){
+                    cout << "Dequeued: " << q.front().name << endl;
+                    q.pop();
+                } else {
+                    cout << "Queue Underflow! No customers." << endl;
+                }
+                break;
+            case 3:
+                if(!q.empty())
+                    cout << "Front: " << q.front().name << " (ID: " << q.front().id << ")" << endl;
+                else
+                    cout << "Queue empty" << endl;
+                break;
+            case 4:
+                if(q.empty()){
+                    cout << "Queue empty" << endl;
+                } else {
+                    queue<Customer> temp = q;
+                    cout << "Queue: FRONT -> ";
+                    while(!temp.empty()){
+                        cout << temp.front().name << " -> ";
+                        temp.pop();
+                    }
+                    cout << "REAR" << endl;
+                }
+                break;
+            case 5:
+                cout << "Size: " << q.size() << endl;
+                break;
+        }
+    } while(choice != 0);
 
     return 0;
 }
