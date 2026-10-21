@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer Queue System</title>
+<style>
+body{font-family:'Segoe UI',Arial;background:#020617;color:white;display:flex;justify-content:center;min-height:100vh;margin:0;padding:15px}
+.box{background:#0f172a;padding:22px;border-radius:18px;width:100%;max-width:520px;border:1px solid #1e293b;box-shadow:0 0 30px rgba(14,165,233,0.15)}
+h1{color:#0ea5e9;text-align:center;margin:0;font-size:26px}
+.sub{text-align:center;color:#64748b;font-size:12px;margin:5px 0 15px}
+.row{display:flex;gap:8px}
+input{flex:1;padding:13px;border-radius:10px;border:1px solid #334155;background:#020617;color:white;outline:none}
+input:focus{border-color:#0ea5e9}
+.btn-main{width:100%;margin-top:8px;padding:14px;background:#0ea5e9;color:#000;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-size:15px}
+.btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
+.btns button{padding:10px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#94a3b8;cursor:pointer;font-weight:600}
+.btns button:hover{background:#0ea5e9;color:black}
+.queue{display:flex;gap:8px;overflow-x:auto;padding:12px 0;min-height:80px;background:#020617;border:1px dashed #334155;border-radius:12px;margin-top:12px}
+.customer{background:#1e293b;border:1px solid #0ea5e9;border-radius:12px;padding:8px 14px;min-width:80px;text-align:center;animation:pop 0.3s}
+@keyframes pop{from{transform:scale(0.5)}to{transform:scale(1)}}
+.num{font-size:10px;color:#0ea5e9}
+.name{font-weight:bold;font-size:14px}
+.info{margin-top:12px;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.3);padding:10px;border-radius:8px;text-align:center;color:#0ea5e9;font-size:13px}
+.front{border-color:#22c55e !important;box-shadow:0 0 10px rgba(34,197,94,0.3)}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>CUSTOMER QUEUE</h1>
+<p class="sub">Real-world application of Queues - FIFO System | C++ queue&lt;Customer&gt;</p>
+<div class="row">
+<input id="cname" placeholder="Customer Name e.g. Ama">
+<input id="cnum" placeholder="ID" style="max-width:80px">
+</div>
+<button class="btn-main" onclick="enq()">ENQUEUE → queue.push()</button>
+<div class="btns">
+<button onclick="deq()">DEQUEUE</button>
+<button onclick="front()">FRONT</button>
+<button onclick="clearQ()">CLEAR</button>
+</div>
+<div class="queue" id="q"><div style="color:#334155;margin:auto;font-size:13px">Queue empty → front = -1, rear = -1</div></div>
+<div class="info" id="msg">System Ready - Queue uses FIFO: First In First Out</div>
+</div>
+<script>
+let queue=[];
+function render(){
+let el=document.getElementById('q');
+if(queue.length==0){el.innerHTML='<div style="color:#334155;margin:auto;font-size:13px">Queue empty → front = -1, rear = -1</div>';return;}
+el.innerHTML=queue.map((c,i)=>`<div class="customer ${i==0?'front':''}"><div class="num">#${i==0?'FRONT':i} [${i}]</div><div class="name">${c.name}</div><div style="font-size:11px;color:#64748b">${c.id}</div></div>`).join('');
+}
+function enq(){
+let n=document.getElementById('cname').value.trim();
+let id=document.getElementById('cnum').value.trim()||'C'+(queue.length+1);
+if(!n){msg('Enter customer name!');return;}
+queue.push({name:n,id:id});
+document.getElementById('cname').value='';document.getElementById('cnum').value='';
+render();msg(`ENQUEUED ${n} | queue size = ${queue.length} | rear = ${queue.length-1}`);
+}
+function deq(){
+if(queue.length==0){msg('Queue Underflow! Empty');return;}
+let removed=queue.shift();
+render();msg(`DEQUEUED ${removed.name} | Served | size now ${queue.length}`);
+}
+function front(){
+if(queue.length==0){msg('Queue empty - No FRONT');return;}
+msg(`FRONT = ${queue[0].name} | ID: ${queue[0].id} | Waiting at counter`);
+}
+function clearQ(){queue=[];render();msg('Queue cleared | front = rear = -1');}
+function msg(t){document.getElementById('msg').innerText=t;}
+</script>
+</body>
+</html>
